@@ -1,0 +1,198 @@
+<!--
+  Sidebar.vue — reference template for vue-saas-redesign
+
+  Drop into <project>/src/components/Sidebar.vue (or wherever the host
+  project keeps components). The skill's Phase 3 may need to substitute:
+    - i18n call (t('nav.X'))     — only if the project uses i18n
+    - icon SVGs                   — pulled from reference/icons.md
+    - footer slot content         — ProfileMenu, LanguageSwitcher, etc.
+
+  Assumes design tokens from reference/tokens.css are loaded globally.
+  Uses no external icon libraries; icons are inline SVG from props.
+-->
+
+<template>
+  <aside class="sidebar" :style="{ width: width + 'px' }">
+    <!-- Brand / logo row at top -->
+    <div class="sidebar-brand">
+      <slot name="brand">
+        <div class="brand-mark" aria-hidden="true">{{ brandInitial }}</div>
+        <div class="brand-text">
+          <div class="brand-name">{{ brandName }}</div>
+          <div v-if="brandSubtitle" class="brand-subtitle">{{ brandSubtitle }}</div>
+        </div>
+      </slot>
+    </div>
+
+    <!-- Primary nav -->
+    <nav class="sidebar-nav" aria-label="Primary">
+      <router-link
+        v-for="route in routes"
+        :key="route.path"
+        :to="route.path"
+        class="nav-item"
+        :class="{ active: $route.path === route.path }"
+      >
+        <span class="nav-icon" v-html="route.icon" aria-hidden="true"></span>
+        <span class="nav-label">{{ route.label }}</span>
+      </router-link>
+    </nav>
+
+    <!-- Footer: user menu, language switcher, theme toggle, etc. -->
+    <div class="sidebar-footer">
+      <slot name="footer" />
+    </div>
+  </aside>
+</template>
+
+<script setup>
+/*
+ * Props
+ *  - routes: Array<{ path: string, label: string, icon: string (raw SVG) }>
+ *  - width:  Number (px). Defaults to the --sidebar-width token; passing
+ *            a different number overrides for this instance.
+ *  - brandName / brandSubtitle: rendered in the brand row.
+ *
+ * No emits — navigation is handled by router-link.
+ */
+import { computed } from 'vue'
+
+const props = defineProps({
+  routes: {
+    type: Array,
+    required: true,
+    // Example item:
+    // { path: '/orders', label: 'Orders', icon: '<svg>...</svg>' }
+  },
+  width: { type: Number, default: 240 },
+  brandName: { type: String, default: 'App' },
+  brandSubtitle: { type: String, default: '' },
+})
+
+// Show a single-letter mark when no brand image is slotted.
+const brandInitial = computed(() => (props.brandName || 'A').charAt(0).toUpperCase())
+</script>
+
+<style scoped>
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-sidebar);
+  border-right: 1px solid var(--color-border);
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  color: var(--color-ink-soft);
+}
+
+/* ─── Brand row ──────────────────────────────────────────── */
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.brand-mark {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-md);
+  background: var(--color-accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: var(--text-md);
+  flex-shrink: 0;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.brand-name {
+  font-weight: 600;
+  color: var(--color-ink);
+  font-size: var(--text-md);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.brand-subtitle {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── Nav ───────────────────────────────────────────────── */
+.sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-3) var(--space-2);
+  gap: 2px;
+  overflow-y: auto;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--color-ink-soft);
+  text-decoration: none;
+  font-size: var(--text-base);
+  font-weight: 500;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.nav-item:hover {
+  background: var(--color-hover);
+  color: var(--color-ink);
+}
+
+.nav-item.active {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-ink);
+}
+
+.nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.nav-icon :deep(svg) {
+  width: 16px;
+  height: 16px;
+}
+
+.nav-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── Footer ────────────────────────────────────────────── */
+.sidebar-footer {
+  padding: var(--space-3) var(--space-3);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+</style>

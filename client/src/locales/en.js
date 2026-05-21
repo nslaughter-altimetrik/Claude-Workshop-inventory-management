@@ -4,6 +4,7 @@ export default {
     overview: 'Overview',
     inventory: 'Inventory',
     orders: 'Orders',
+    restocking: 'Restocking',
     finance: 'Finance',
     demandForecast: 'Demand Forecast',
     companyName: 'Catalyst Components',
@@ -106,6 +107,9 @@ export default {
     title: 'Orders',
     description: 'View and manage customer orders',
     allOrders: 'All Orders',
+    submittedOrders: 'Submitted Orders',
+    leadTime: 'Lead Time',
+    leadTimeDays: '{days} days',
     totalOrders: 'Total Orders',
     totalRevenue: 'Total Revenue',
     avgOrderValue: 'Avg Order Value',
@@ -126,6 +130,34 @@ export default {
       status: 'Status',
       expectedDelivery: 'Expected Delivery',
       actualDelivery: 'Actual Delivery'
+    }
+  },
+
+  // Restocking
+  restocking: {
+    title: 'Restocking',
+    description: 'Set a budget. We recommend what to restock based on demand forecasts and current stock.',
+    budgetLabel: 'Available Budget',
+    recommended: 'Recommended Items',
+    skipped: 'Items Skipped (Over Budget)',
+    totalCost: 'Total Cost',
+    remaining: 'Remaining Budget',
+    placeOrder: 'Place Order',
+    placing: 'Placing order...',
+    orderSuccess: 'Order placed. Redirecting to Orders...',
+    noRecommendations: 'No items need restocking at this budget.',
+    reasonLowStock: 'Below reorder point',
+    reasonRising: 'Rising demand',
+    columns: {
+      sku: 'SKU',
+      name: 'Item',
+      onHand: 'On Hand',
+      reorderPoint: 'Reorder Point',
+      forecasted: 'Forecasted Demand',
+      qtyToOrder: 'Qty to Order',
+      unitCost: 'Unit Cost',
+      lineTotal: 'Line Total',
+      reason: 'Reason'
     }
   },
 
@@ -204,6 +236,7 @@ export default {
     shipped: 'Shipped',
     processing: 'Processing',
     backordered: 'Backordered',
+    submitted: 'Submitted',
     inStock: 'In Stock',
     lowStock: 'Low Stock',
     adequate: 'Adequate'

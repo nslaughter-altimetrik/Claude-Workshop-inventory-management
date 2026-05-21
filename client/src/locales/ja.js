@@ -4,6 +4,7 @@ export default {
     overview: '概要',
     inventory: '在庫',
     orders: '注文',
+    restocking: '在庫補充',
     finance: '財務',
     demandForecast: '需要予測',
     companyName: '触媒コンポーネンツ',
@@ -106,6 +107,9 @@ export default {
     title: '注文',
     description: '顧客注文の表示と管理',
     allOrders: 'すべての注文',
+    submittedOrders: '送信済み注文',
+    leadTime: 'リードタイム',
+    leadTimeDays: '{days}日',
     totalOrders: '総注文数',
     totalRevenue: '総収益',
     avgOrderValue: '平均注文額',
@@ -126,6 +130,34 @@ export default {
       status: 'ステータス',
       expectedDelivery: '予定配達日',
       actualDelivery: '実際の配達日'
+    }
+  },
+
+  // Restocking
+  restocking: {
+    title: '在庫補充',
+    description: '予算を設定すると、需要予測と現在の在庫に基づいて補充項目を推奨します。',
+    budgetLabel: '利用可能な予算',
+    recommended: '推奨アイテム',
+    skipped: 'スキップされたアイテム（予算超過）',
+    totalCost: '合計コスト',
+    remaining: '残予算',
+    placeOrder: '注文する',
+    placing: '送信中...',
+    orderSuccess: '注文が送信されました。注文タブへ移動します...',
+    noRecommendations: 'この予算では補充が必要な項目はありません。',
+    reasonLowStock: '再注文点以下',
+    reasonRising: '需要増加',
+    columns: {
+      sku: 'SKU',
+      name: '品目',
+      onHand: '在庫数',
+      reorderPoint: '再注文点',
+      forecasted: '予測需要',
+      qtyToOrder: '注文数量',
+      unitCost: '単価',
+      lineTotal: '小計',
+      reason: '理由'
     }
   },
 
@@ -204,6 +236,7 @@ export default {
     shipped: '出荷済み',
     processing: '処理中',
     backordered: 'バックオーダー',
+    submitted: '送信済み',
     inStock: '在庫あり',
     lowStock: '在庫僅少',
     adequate: '適量'

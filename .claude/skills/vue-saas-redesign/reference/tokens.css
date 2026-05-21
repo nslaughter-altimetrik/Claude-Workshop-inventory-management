@@ -1,0 +1,105 @@
+/*
+ * Linear-style design tokens for vue-saas-redesign
+ *
+ * Drop-in :root variables for a modern SaaS look.
+ * - Slate/zinc neutral palette
+ * - 8-pt spacing scale (--space-2 = 8px is the unit)
+ * - Tight typography (13px base, system font stack)
+ * - Subtle borders, low-saturation accents
+ *
+ * USAGE:
+ *   Either copy this file to <project>/src/styles/tokens.css and
+ *   `import './styles/tokens.css'` in main.js, or inline this :root
+ *   block into App.vue's unscoped <style>.
+ *
+ * MERGE RULES:
+ *   If the target project already declares some of these variables,
+ *   keep the project's existing names. Only add what's missing (e.g.
+ *   --sidebar-width is almost always new).
+ */
+
+:root {
+  /* ─── Surfaces ──────────────────────────────────────────────── */
+  --color-bg: #fafafa;          /* Page canvas behind cards */
+  --color-surface: #ffffff;     /* Cards, modals, popovers */
+  --color-sidebar: #fbfbfa;     /* Sidebar background (slightly warmer than bg) */
+  --color-hover: #f4f4f3;       /* Subtle hover fill for nav items, rows */
+
+  /* ─── Borders ───────────────────────────────────────────────── */
+  --color-border: #e8e8e6;        /* Default card / divider borders */
+  --color-border-strong: #d4d4d2; /* Slightly stronger — input outlines, active borders */
+
+  /* ─── Ink (text) ────────────────────────────────────────────── */
+  --color-ink: #18181b;           /* Primary text */
+  --color-ink-soft: #52525b;      /* Secondary text */
+  --color-muted: #71717a;         /* Captions, helper text */
+  --color-faint: #a1a1aa;         /* Very low-emphasis */
+
+  /* ─── Accent ────────────────────────────────────────────────── */
+  --color-accent: #5e6ad2;        /* Linear-ish indigo */
+  --color-accent-soft: #eeeefe;   /* Accent backgrounds (selected nav item, active states) */
+  --color-accent-ink: #4c54b8;    /* Accent text on light backgrounds */
+
+  /* ─── Semantic (kept compatible with existing badge styles) ─── */
+  --color-success: #10b981;
+  --color-success-soft: #d1fae5;
+  --color-warning: #f59e0b;
+  --color-warning-soft: #fef3c7;
+  --color-danger: #ef4444;
+  --color-danger-soft: #fee2e2;
+  --color-info: #3b82f6;
+  --color-info-soft: #dbeafe;
+
+  /* ─── Spacing scale (8-pt) ──────────────────────────────────── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ─── Radius ────────────────────────────────────────────────── */
+  --radius-sm: 4px;   /* Badges, tags */
+  --radius-md: 6px;   /* Buttons, inputs */
+  --radius-lg: 8px;   /* Cards */
+  --radius-xl: 12px;  /* Modals, large containers */
+  --radius-full: 999px;
+
+  /* ─── Typography ────────────────────────────────────────────── */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI",
+               Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+  --text-xs: 11px;    /* Caption, badge */
+  --text-sm: 12px;    /* Secondary, table cell */
+  --text-base: 13px;  /* Body — Linear's base */
+  --text-md: 14px;    /* Slightly emphasized body */
+  --text-lg: 16px;    /* Section headers */
+  --text-xl: 20px;    /* Page titles */
+  --text-2xl: 24px;   /* Display */
+
+  --leading-tight: 1.3;
+  --leading-normal: 1.55;
+  --leading-relaxed: 1.7;
+
+  /* ─── Shadows ───────────────────────────────────────────────── */
+  --shadow-xs: 0 1px 1px rgba(15, 23, 42, 0.03);
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.06);
+
+  /* ─── Layout ────────────────────────────────────────────────── */
+  --sidebar-width: 240px;
+  --sidebar-width-collapsed: 56px;
+  --content-max-width: 1280px;
+  --header-height: 56px;
+
+  /* ─── Motion ────────────────────────────────────────────────── */
+  --transition-fast: 100ms ease-out;
+  --transition-base: 150ms ease-out;
+  --transition-slow: 220ms ease-out;
+}

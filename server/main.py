@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 from pydantic import BaseModel
+from datetime import datetime, timedelta
 from mock_data import inventory_items, orders, demand_forecasts, backlog_items, spending_summary, monthly_spending, category_spending, recent_transactions, purchase_orders
 
 app = FastAPI(title="Factory Inventory Management System")
@@ -120,6 +121,33 @@ class CreatePurchaseOrderRequest(BaseModel):
     expected_delivery_date: str
     notes: Optional[str] = None
 
+class OrderItemInput(BaseModel):
+    sku: str
+    name: str
+    quantity: int
+    unit_price: float
+
+class CreateOrderRequest(BaseModel):
+    items: List[OrderItemInput]
+    warehouse: Optional[str] = None
+    category: Optional[str] = None
+    customer: Optional[str] = "Internal Restocking"
+
+class Task(BaseModel):
+    id: int
+    title: str
+    priority: str
+    dueDate: str
+    status: str
+
+class CreateTaskRequest(BaseModel):
+    title: str
+    priority: str = "medium"
+    dueDate: str
+
+# In-memory task store (mirrors the mock-data pattern; resets on server restart).
+api_tasks: List[dict] = []
+
 # API endpoints
 @app.get("/")
 def root():
@@ -160,6 +188,33 @@ def get_order(order_id: str):
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
     return order
+
+@app.post("/api/orders", response_model=Order)
+def create_order(req: CreateOrderRequest):
+    """Create a new submitted order (used by the Restocking tab)."""
+    # New id = max existing numeric id + 1; orders.json uses sequential string IDs
+    existing_ids = [int(o["id"]) for o in orders if str(o.get("id", "")).isdigit()]
+    new_id = str((max(existing_ids) if existing_ids else 0) + 1)
+
+    now = datetime.utcnow()
+    expected = now + timedelta(days=7)
+    total = round(sum(i.quantity * i.unit_price for i in req.items), 2)
+
+    new_order = {
+        "id": new_id,
+        "order_number": f"ORD-2025-{int(new_id):04d}",
+        "customer": req.customer or "Internal Restocking",
+        "items": [i.dict() for i in req.items],
+        "status": "Submitted",
+        "warehouse": req.warehouse,
+        "category": req.category,
+        "order_date": now.isoformat(),
+        "expected_delivery": expected.isoformat(),
+        "total_value": total,
+        "actual_delivery": None,
+    }
+    orders.append(new_order)
+    return new_order
 
 @app.get("/api/demand", response_model=List[DemandForecast])
 def get_demand_forecasts():
@@ -303,6 +358,43 @@ def get_monthly_trends():
     result = list(months.values())
     result.sort(key=lambda x: x['month'])
     return result
+
+@app.get("/api/tasks", response_model=List[Task])
+def get_tasks():
+    return api_tasks
+
+@app.post("/api/tasks", response_model=Task)
+def create_task(req: CreateTaskRequest):
+    # Generate next id by scanning current store rather than tracking a counter,
+    # so the id stays monotonic even after deletes.
+    new_id = (max((t["id"] for t in api_tasks), default=0)) + 1
+    task = {
+        "id": new_id,
+        "title": req.title,
+        "priority": req.priority,
+        "dueDate": req.dueDate,
+        "status": "pending",
+    }
+    api_tasks.append(task)
+    return task
+
+@app.delete("/api/tasks/{task_id}")
+def delete_task(task_id: int):
+    global api_tasks
+    before = len(api_tasks)
+    api_tasks = [t for t in api_tasks if t["id"] != task_id]
+    if len(api_tasks) == before:
+        raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
+    return {"deleted": task_id}
+
+@app.patch("/api/tasks/{task_id}", response_model=Task)
+def toggle_task(task_id: int):
+    # PATCH with no body toggles status; frontend's api.toggleTask() relies on this.
+    for t in api_tasks:
+        if t["id"] == task_id:
+            t["status"] = "completed" if t["status"] == "pending" else "pending"
+            return t
+    raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
 
 if __name__ == "__main__":
     import uvicorn
